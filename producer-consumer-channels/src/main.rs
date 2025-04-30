@@ -22,12 +22,10 @@ impl Producer {
     }
 
     fn produce(&self) {
-        loop {
-            println!("Producer {} producing {}", self.id, self.data);
-            sleep(Duration::from_millis(3000));
-            self.sender.send(self.data).unwrap();
-            println!("Producer {} produced {}", self.id, self.data);
-        }
+        println!("Producer {} producing {}", self.id, self.data);
+        sleep(Duration::from_millis(3000));
+        self.sender.send(self.data).unwrap();
+        println!("Producer {} produced {}", self.id, self.data);
     }
 }
 
@@ -70,7 +68,7 @@ fn main() {
     }
 
     // Crear consumidores
-    for j in 0..10 {
+    for j in 0..3 {
         let rx = rx.clone();
         let handle = thread::spawn(move || {
             let consumer = Consumer::new(j, rx);

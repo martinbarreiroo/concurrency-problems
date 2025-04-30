@@ -1,7 +1,7 @@
 use std::sync::{Arc, Condvar, Mutex};
 
 pub struct Table {
-    forks: Arc<Mutex<Vec<bool>>>,
+    forks: Mutex<Vec<bool>>,
     condvar: Condvar
 }
 
@@ -9,7 +9,7 @@ pub struct Table {
 impl Table {
     pub fn new(number_of_forks: usize) -> Self {
         Table {
-            forks: Arc::new(Mutex::new(vec![true; number_of_forks])),
+            forks: Mutex::new(vec![true; number_of_forks]),
             condvar: Condvar::new()
         }
     }

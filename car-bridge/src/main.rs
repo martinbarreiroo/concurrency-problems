@@ -80,13 +80,11 @@ impl Bridge {
     fn release_bridge(&self, car_id: usize) {
         let mut state = self.state.lock().unwrap();
         // Remove car from queue
-        if let Some(pos) = state.queue.iter().position(|&id| id == car_id) {
-            state.queue.remove(pos);
-            println!("Car {} exited the bridge", car_id);
-            self.direction_changed.notify_all();
+        state.queue.pop_front();
+        println!("Car {} exited the bridge", car_id);
+        self.direction_changed.notify_all();
         }
     }
-}
 
 impl Car {
     fn new(bridge: Arc<Bridge>, id: usize, direction: Direction) -> Self {

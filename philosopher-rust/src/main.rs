@@ -14,13 +14,13 @@ fn main() {
     for i in 0..5 {
         let table_clone = Arc::clone(&table);
         handles.push(spawn(move || {
-            let philosopher = Philosopher::new(table_clone);
+            let philosopher = Philosopher::new(table_clone, i);
             loop {
                 println!("Philosopher {} is thinking.", i);
                 philosopher.think();
 
                 println!("Philosopher {} is hungry.", i);
-                philosopher.eat(i);
+                philosopher.eat();
 
                 println!("Philosopher {} is done eating.", i);
             }

@@ -9,7 +9,7 @@ use std::time::Duration;
 struct BarberShop {
     waiting_room: Mutex<VecDeque<usize>>,
     barber_state: Condvar,
-    waiting_room_semaphore: usize,
+    waiting_room_capacity: usize,
 
 }
 
@@ -18,14 +18,14 @@ impl BarberShop {
         BarberShop {
             waiting_room: Mutex::new(VecDeque::new()),
             barber_state: Condvar::new(),
-            waiting_room_semaphore: n_of_chairs,
+            waiting_room_capacity: n_of_chairs,
         }
     }
 
     fn enter_waiting_room(&self, customer: usize) {
         let mut waiting_room = self.waiting_room.lock().unwrap();
 
-        if waiting_room.len() >= self.waiting_room_semaphore {
+        if waiting_room.len() >= self.waiting_room_capacity {
             println!("room is full");
             return;
         }
@@ -37,7 +37,7 @@ impl BarberShop {
 
     }
 
-    fn exit_waiting_room(&self) -> usize {
+    fn call_customer(&self) -> usize {
         let mut waiting_room = self.waiting_room.lock().unwrap();
         if waiting_room.is_empty() {
             println!("room is empty, barber goes to sleep");
@@ -58,7 +58,7 @@ impl Barber {
 
     fn work(&self) {
         loop {
-            let customer = self.shop.exit_waiting_room();
+            let customer = self.shop.call_customer();
             self.cut_hair(customer);
         }
     }
